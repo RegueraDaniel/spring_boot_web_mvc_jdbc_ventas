@@ -7,5 +7,6 @@ import org.iesvdm.dto.PedidoDTO;
 public interface PedidoDAO {
 	
 	public List<PedidoDTO> getPedidosDelComercial(int idComercial);
+	public List<String> getImportesMayorAMenor(List<PedidoDTO> lista);
 	
 }

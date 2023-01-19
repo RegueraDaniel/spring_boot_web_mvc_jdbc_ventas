@@ -24,6 +24,12 @@ public class PedidoService {
 		return pedidoDAO.getPedidosDelComercial(idComercial);
 		
 	}
+	
+	public List<String> importesMayorAMenor(List<PedidoDTO> lista){
+		
+		return pedidoDAO.getImportesMayorAMenor(lista);
+		
+	}
 
 
 }

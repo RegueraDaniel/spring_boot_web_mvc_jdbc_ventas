@@ -1,11 +1,15 @@
 package org.iesvdm.service;
 
+import java.util.DoubleSummaryStatistics;
+import java.util.IntSummaryStatistics;
 import java.util.List;
 import java.util.Optional;
+import java.util.stream.Collectors;
 
 import org.iesvdm.dao.ComercialDAO;
 import org.iesvdm.modelo.Comercial;
 import org.iesvdm.dao.PedidoDAO;
+import org.iesvdm.dto.PedidoDTO;
 import org.iesvdm.modelo.Pedido;
 import org.springframework.stereotype.Service;
 
@@ -55,6 +59,13 @@ public class ComercialService {
 		
 		comercialDAO.delete(id);
 		
+	}
+	
+	public DoubleSummaryStatistics sacarEstadisticas(List<PedidoDTO> listaPedidos) {
+		DoubleSummaryStatistics datos;
+		datos = listaPedidos.stream().collect(Collectors.summarizingDouble(p -> p.getPedidoComercial().getTotal()));
+		return datos;
+
 	}
 
 }

@@ -20,7 +20,7 @@ import lombok.extern.slf4j.Slf4j;
 //@AllArgsConstructor
 public class ComercialDAOImpl implements ComercialDAO{
 	@Autowired
-	/*no pq mejor hacer unj constructor*/
+	/*no pq mejor hacer un constructor*/
 	private JdbcTemplate jdbcTemplate;
 	 
 	 

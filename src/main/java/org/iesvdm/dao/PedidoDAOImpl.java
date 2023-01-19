@@ -2,6 +2,12 @@ package org.iesvdm.dao;
 
 import java.sql.PreparedStatement;
 import java.util.List;
+import java.util.Map;
+import java.util.Optional;
+import java.util.stream.Collectors;
+import static java.util.stream.Collectors.*;
+import static java.util.Comparator.*;
+import java.util.ArrayList;
 import java.util.Date;
 
 import org.iesvdm.modelo.Pedido;
@@ -46,4 +52,39 @@ public class PedidoDAOImpl implements PedidoDAO{
         return listped;
 		 
 	}
+	
+	@Override
+	public List<String> getImportesMayorAMenor(List<PedidoDTO> lista){
+		List<PedidoDTO> listaAdevolver = new ArrayList<>();
+		listaAdevolver.addAll(lista);
+		
+		List<String> topClientes = lista.stream()
+				.sorted((p1, p2)-> Double.compare(p2.getPedidoComercial().getTotal(), p1.getPedidoComercial().getTotal()))
+				.map(PedidoDTO::getNombreCliente)
+				.distinct()
+				.collect(Collectors.toList());
+		
+			
+		Map<String, Optional<PedidoDTO>> prueba = lista.stream()	
+				.sorted((p1, p2)-> Double.compare(p2.getPedidoComercial().getTotal(), p1.getPedidoComercial().getTotal()))
+				.collect(groupingBy(PedidoDTO::getNombreCliente, maxBy(comparingDouble(p -> p.getPedidoComercial().getTotal()))));
+		
+		/*
+		List<String> devolucion = prueba.entrySet().stream()
+									.sorted((p1, p2)-> Double.compare(((PedidoDTO) p2).getPedidoComercial().getTotal(), ((PedidoDTO)p1).getPedidoComercial().getTotal()))
+									.map( p -> ((PedidoDTO) p).getNombreCliente()+" "+((PedidoDTO) p).getPedidoComercial().getTotal() )
+									.collect(Collectors.toList());
+		*/
+		/*
+		List<String> devolucion = prueba.entrySet().stream()
+				.sorted((p1, p2)-> Double.compare(( p2).getPedidoComercial().getTotal(), (p1).getPedidoComercial().getTotal()))
+				.map( p -> ( p).getNombreCliente()+" "+(p).getPedidoComercial().getTotal() )
+				.collect(Collectors.toList());
+		*/
+		prueba.forEach((t, u) -> System.out.println(t +" "+ u.get().getPedidoComercial().getTotal()));
+		//devolucion.forEach(System.out::println);
+		
+		return topClientes;
+	}
+	
 }

@@ -12,9 +12,13 @@
 	<version>0.0.1-SNAPSHOT</version>
 	<name>spring_boot_web_mvc_jdbc_ventas</name>
 	<description>Proyecto Ventas</description>
+	
 	<properties>
 		<!-- mínima versión de java con spring boot 3 -->
 		<java.version>17</java.version>
+		<!-- 2 propiedades de mapping -->
+		<!-- <org.mapstruct.version>1.5.3.Final</org.mapstruct.version> -->
+		<!-- <lombok-mapstruct-binding.version>0.2.0</lombok-mapstruct-binding.version> -->
 	</properties>
 	<dependencies>
 
@@ -33,7 +37,6 @@
 			(spring_boot_web_mvc_jdbc_ventas) tiene que añadir expresamente esta dependencia
 			devtools marcada como optional a true-->
 		</dependency>
-
 		<dependency>
 			<groupId>org.springframework.boot</groupId>
 			<artifactId>spring-boot-starter-web</artifactId>
@@ -60,13 +63,14 @@
 				</exclusion>
 			</exclusions>
 		</dependency>
+		
 		<!-- añadimos el connection pool Hikari compatible con java11+, 
 			automáticamente spring boot lo cogerá en vez
 			del connection pool de tomcat que hemos excluido -->
 		<dependency>
 			<groupId>com.zaxxer</groupId>
 			<artifactId>HikariCP</artifactId>
-			<version>5.0.1</version>
+			<version>5.0.1</version><!--$NO-MVN-MAN-VER$-->
 			<!-- hay que aceptar el warning para compatibilidad con java11+-->
 		</dependency>
 

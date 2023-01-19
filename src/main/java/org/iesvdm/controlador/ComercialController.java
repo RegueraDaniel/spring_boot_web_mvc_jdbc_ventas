@@ -1,11 +1,15 @@
 package org.iesvdm.controlador;
 
+import java.util.DoubleSummaryStatistics;
+import java.util.IntSummaryStatistics;
 import java.util.List;
 
 import org.iesvdm.modelo.Comercial;
+import org.iesvdm.modelo.Pedido;
 import org.iesvdm.service.ComercialService;
 import org.iesvdm.service.PedidoService;
 import org.iesvdm.dto.ComercialDTO;
+import org.iesvdm.dto.PedidoDTO;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Controller;
 import org.springframework.ui.Model;
@@ -53,7 +57,14 @@ public class ComercialController {
 	public String detalle(Model model, @PathVariable Integer id ) {
 		
 		Comercial comercial = comercialService.one(id);
-		ComercialDTO comercialDTO = new ComercialDTO(comercial, pedidoService.listPedidosDelComercial(id));
+		List<PedidoDTO> pedidosComercial = pedidoService.listPedidosDelComercial(id);
+		DoubleSummaryStatistics estadisticasDePedidos = comercialService.sacarEstadisticas(pedidosComercial);
+		ComercialDTO comercialDTO = new ComercialDTO(comercial, pedidosComercial, estadisticasDePedidos);
+		
+		List<String> mejoresClientes = pedidoService.importesMayorAMenor(pedidosComercial);
+		
+		model.addAttribute("topClientes", mejoresClientes);
+		
 		model.addAttribute("comercialDTO", comercialDTO);
 		
 		return "detalle-comercial";

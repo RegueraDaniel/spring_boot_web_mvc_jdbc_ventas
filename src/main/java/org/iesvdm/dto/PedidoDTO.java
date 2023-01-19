@@ -13,7 +13,7 @@ import lombok.NoArgsConstructor;
 //quitamos para q tire del super
 //@AllArgsConstructor
 @SuppressWarnings("unused")
-public class PedidoDTO extends Pedido{
+public class PedidoDTO {
 	private Pedido pedidoComercial;
 	private String nombreCliente;
 	private String apellidoCliente;
