@@ -1,10 +1,14 @@
 package org.iesvdm.dao;
 
 import java.sql.PreparedStatement;
+import java.util.ArrayList;
 import java.util.List;
 import java.util.Optional;
 
+import org.iesvdm.dto.PedidoDTO;
 import org.iesvdm.modelo.Cliente;
+import org.iesvdm.modelo.Comercial;
+import org.iesvdm.modelo.Pedido;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.jdbc.core.JdbcTemplate;
 import org.springframework.jdbc.support.GeneratedKeyHolder;
@@ -144,6 +148,26 @@ public class ClienteDAOImpl implements ClienteDAO {
 		int rows = jdbcTemplate.update("DELETE FROM cliente WHERE id = ?", id);
 		
 		log.info("Delete de Cliente con {} registros eliminados.", rows);		
+		
+	}
+	
+	//pedidos de un cliente
+	@Override
+	public List<Pedido> misPedidos(int idCliente){
+		List<Pedido> listPedClie = jdbcTemplate.query(
+                "SELECT * FROM pedido where id_cliente =?",
+                (rs, rowNum) -> new Pedido(
+                		rs.getInt("id"),
+					 	rs.getDouble("total"),
+					 	rs.getDate("fecha"),
+					 	rs.getInt("id_cliente"),
+					 	rs.getInt("id_comercial")
+					 	), idCliente
+				);
+		
+		log.info("Devueltos {} registros.", listPedClie.size());
+		
+        return listPedClie;
 		
 	}
 	

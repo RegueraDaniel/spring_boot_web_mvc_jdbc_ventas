@@ -1,12 +1,18 @@
 package org.iesvdm.controlador;
 
+import java.util.Arrays;
+import java.util.Date;
 import java.util.List;
 
+import org.iesvdm.dto.ComercialDTO2;
 import org.iesvdm.modelo.Cliente;
+import org.iesvdm.modelo.Pedido;
 import org.iesvdm.service.ClienteService;
+import org.iesvdm.service.ComercialService;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Controller;
 import org.springframework.ui.Model;
+import org.springframework.validation.BindingResult;
 import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.bind.annotation.ModelAttribute;
 import org.springframework.web.bind.annotation.PathVariable;
@@ -15,6 +21,8 @@ import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.servlet.ModelAndView;
 import org.springframework.web.servlet.mvc.support.RedirectAttributes;
 import org.springframework.web.servlet.view.RedirectView;
+
+import jakarta.validation.Valid;
 
 @Controller
 //Se puede fijar ruta base de las peticiones de este controlador.
@@ -25,11 +33,14 @@ public class ClienteController {
 	
 	private ClienteService clienteService;
 	
+	private ComercialService comercialService;
+	
 	//Se utiliza inyección automática por constructor del framework Spring.
 	//Por tanto, se puede omitir la anotación Autowired
 	//@Autowired
-	public ClienteController(ClienteService clienteService) {
+	public ClienteController(ClienteService clienteService, ComercialService comercialService) {
 		this.clienteService = clienteService;
+		this.comercialService = comercialService;
 	}
 	
 	//@RequestMapping(value = "/clientes", method = RequestMethod.GET)
@@ -50,7 +61,33 @@ public class ClienteController {
 		Cliente cliente = clienteService.one(id);
 		model.addAttribute("cliente", cliente);
 		
+		List<Pedido> pedidosDelCliente = clienteService.pedidosDeUnCliente(id.intValue());
+		
+		List<Integer> limites = Arrays.asList(-3, -6, -12, -60);
+		
+		List<Date> limiteFechas = comercialService.fechasLimites(limites);
+		
+		List<Integer> idComercialesDePedidos = comercialService.comercialesDAODePedidos(pedidosDelCliente);
+		
+		List<ComercialDTO2> listaComerciales =comercialService.comercialesDTO2dePedidos(pedidosDelCliente, idComercialesDePedidos, limiteFechas);
+		model.addAttribute("estadisticasComerciales", listaComerciales);
 		return "detalle-cliente";
+	}
+	
+	@GetMapping("/validation")
+	public String validation(@ModelAttribute Cliente cliente,  Model model) {
+			
+		return "validation";
+		
+	}
+	
+	@PostMapping("/validation")
+	public String validationPost(@Valid @ModelAttribute Cliente cliente, BindingResult bindigResulted, Model model) {
+		
+		model.addAttribute("cliente", cliente);
+		model.addAttribute("toString", cliente.toString());
+				
+		return "validation" ;
 	}
 	
 	@GetMapping("/clientes/crear")
@@ -64,12 +101,11 @@ public class ClienteController {
 	}
 	
 	@PostMapping("/clientes/crear")
-	public RedirectView submitCrear(@ModelAttribute("cliente") Cliente cliente) {
+	public RedirectView submitCrear( @ModelAttribute Cliente cliente,  Model model) {
 		
 		clienteService.newCliente(cliente);
 				
 		return new RedirectView("/clientes") ;
-		
 	}
 	
 	@GetMapping("/clientes/editar/{id}")

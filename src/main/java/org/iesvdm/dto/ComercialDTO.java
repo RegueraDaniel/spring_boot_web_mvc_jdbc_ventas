@@ -29,6 +29,7 @@ public class ComercialDTO {
 	private Double media;
 	private Double suma;
 	
+	
 	/*
 	private Double totalImportes;
 	private Double media;*/

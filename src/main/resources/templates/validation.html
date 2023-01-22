@@ -2,14 +2,16 @@
 <html xmlns:th="http://www.thymeleaf.org">
 <head>
 <meta charset="UTF-8">
-<title>Crear Cliente</title>
+<title>Validation</title>
 <style>
 .clearfix::after {
 	content: "";
 	display: block;
 	clear: both;
 }
-
+.error{
+	color:red;
+}
 </style>
 </head>
 <body>
@@ -92,6 +94,7 @@
 		</div>
 
 	</form>
+	<h1 th:text="${toString}"></h1>
 </div>
 
 </body>

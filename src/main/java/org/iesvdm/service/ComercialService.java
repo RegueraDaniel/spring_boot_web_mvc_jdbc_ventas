@@ -1,5 +1,6 @@
 package org.iesvdm.service;
 
+import java.util.Date;
 import java.util.DoubleSummaryStatistics;
 import java.util.IntSummaryStatistics;
 import java.util.List;
@@ -9,6 +10,7 @@ import java.util.stream.Collectors;
 import org.iesvdm.dao.ComercialDAO;
 import org.iesvdm.modelo.Comercial;
 import org.iesvdm.dao.PedidoDAO;
+import org.iesvdm.dto.ComercialDTO2;
 import org.iesvdm.dto.PedidoDTO;
 import org.iesvdm.modelo.Pedido;
 import org.springframework.stereotype.Service;
@@ -67,5 +69,21 @@ public class ComercialService {
 		return datos;
 
 	}
+	
+	public List<Date>  fechasLimites(List<Integer> mesesLimites){
+		
+		return ComercialDAO.limitesEstadisticos(mesesLimites);
+	}
+	
+	public List<Integer> comercialesDAODePedidos(List<Pedido> pedidosDeCliente){
+		return comercialDAO.comercialesDePedidos(pedidosDeCliente);
+	}
+	
+	public List<ComercialDTO2> comercialesDTO2dePedidos(
+			List<Pedido> pedidos, List<Integer> comerciales, List<Date> limites){
+		return comercialDAO.estadisticasPedidos(pedidos, comerciales, limites);
+	}
+		
+		
 
 }

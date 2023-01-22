@@ -5,6 +5,7 @@ import java.util.Optional;
 
 import org.iesvdm.dao.ClienteDAO;
 import org.iesvdm.modelo.Cliente;
+import org.iesvdm.modelo.Pedido;
 import org.springframework.stereotype.Service;
 
 @Service
@@ -52,5 +53,8 @@ public class ClienteService {
 		
 	}
 	
+	public List<Pedido> pedidosDeUnCliente(int idCliente){
+		return clienteDAO.misPedidos(idCliente);
+	}
 
 }

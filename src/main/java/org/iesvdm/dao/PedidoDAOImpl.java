@@ -9,6 +9,7 @@ import static java.util.stream.Collectors.*;
 import static java.util.Comparator.*;
 import java.util.ArrayList;
 import java.util.Date;
+import java.util.LinkedHashMap;
 
 import org.iesvdm.modelo.Pedido;
 import org.iesvdm.dto.PedidoDTO;
@@ -67,7 +68,7 @@ public class PedidoDAOImpl implements PedidoDAO{
 			
 		Map<String, Optional<PedidoDTO>> prueba = lista.stream()	
 				.sorted((p1, p2)-> Double.compare(p2.getPedidoComercial().getTotal(), p1.getPedidoComercial().getTotal()))
-				.collect(groupingBy(PedidoDTO::getNombreCliente, maxBy(comparingDouble(p -> p.getPedidoComercial().getTotal()))));
+				.collect(groupingBy(PedidoDTO::getNombreCliente, LinkedHashMap::new, maxBy(comparingDouble(p -> p.getPedidoComercial().getTotal() ))) );
 		
 		/*
 		List<String> devolucion = prueba.entrySet().stream()
@@ -81,10 +82,34 @@ public class PedidoDAOImpl implements PedidoDAO{
 				.map( p -> ( p).getNombreCliente()+" "+(p).getPedidoComercial().getTotal() )
 				.collect(Collectors.toList());
 		*/
-		prueba.forEach((t, u) -> System.out.println(t +" "+ u.get().getPedidoComercial().getTotal()));
+		List<String> top = new ArrayList<>();
+		prueba.forEach((t, u) -> System.out.println(top.add( t +" "+ u.get().getPedidoComercial().getTotal())));
 		//devolucion.forEach(System.out::println);
 		
-		return topClientes;
+		return top;
+	}
+	
+	public List<PedidoDTO> pedidosCliente(int idCliente){
+		List<PedidoDTO> listped = jdbcTemplate.query(
+                "SELECT * FROM pedido LEFT OUTER JOIN comercial on pedido.id_comercial = comercial.id WHERE id_cliente=?", 
+                (rs, rowNum) -> { Pedido ped = new Pedido (
+                							rs.getInt("id"),
+                						 	rs.getDouble("total"),
+                						 	rs.getDate("fecha"),
+                						 	rs.getInt("id_cliente"),
+                						 	rs.getInt("id_comercial")
+                						 	); 
+                				PedidoDTO pedDTO = new PedidoDTO(ped, 
+                							rs.getString("nombre"),
+                						 	rs.getString("apellido1"));
+                				return pedDTO;
+                				
+                }, idCliente
+        );
+		
+		log.info("Devueltos {} registros.", listped.size());
+		
+		return listped;
 	}
 	
 }
